@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Book } from '../../../core/models/book';
 import { BookService } from '../../../core/services/book.service';
@@ -10,12 +10,10 @@ import { BookService } from '../../../core/services/book.service';
   styleUrl: './book-details.component.css',
 })
 export class BookDetailsComponent implements OnInit {
-  book: Book | undefined;
+  private bookService = inject(BookService);
+  private route = inject(ActivatedRoute);
 
-  constructor(
-    private bookService: BookService,
-    private route: ActivatedRoute
-  ) {}
+  book: Book | undefined;
 
   ngOnInit(): void {
     const isbn = this.route.snapshot.paramMap.get('isbn');
