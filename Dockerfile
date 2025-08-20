@@ -1,11 +1,5 @@
-# 
-# Command line for runningthe frontend on Docker
-# docker build -t mflibrary-frontend .
-# docker run -d -p 8080:80 --name mflibrary-frontend mflibrary-frontend
-#
-
 # Stage 1: Build Angular app
-FROM node:slim AS builder
+FROM node:20-slim AS builder
 
 # Set working directory
 WORKDIR /app
@@ -27,7 +21,7 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copy built Angular app from builder stage
-COPY --from=builder /app/dist/mflibrary-frontend /usr/share/nginx/html
+COPY --from=builder /app/dist/* /usr/share/nginx/html
 
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
