@@ -1,0 +1,22 @@
+@if (book) {
+<div class="cursor-pointer flex items-center justify-between bg-white p-4 rounded-lg shadow-sm hover:shadow transition"
+    [routerLink]="['books/', book.isbn]">
+    <div class="flex items-center gap-4">
+        <img [src]="book.coverImageUrl" alt="Cover" class="w-16 h-20 rounded-md object-cover" />
+        <div>
+            <h3 class="font-semibold">{{ book.title }}</h3>
+            <div class="flex gap-1 mt-1">
+                @for (category of book.categories; track $index) {
+                <app-book-tag [category]="category"></app-book-tag>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="flex items-center gap-4 text-sm">
+        <span>05/07/25<!-- {{ book.publishedDate | date:'MMM d' }} --></span>
+        <app-icon-avatar [avatarLabel]="book.author"></app-icon-avatar>
+    </div>
+</div>
+} @else {
+<p>No book found</p>
+}

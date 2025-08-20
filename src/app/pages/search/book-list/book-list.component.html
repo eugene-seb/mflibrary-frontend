@@ -1,0 +1,5 @@
+<div class="space-y-4">
+  @for(book of books; track book.isbn){
+  <app-book-row [book]="book"></app-book-row>
+  }
+</div>

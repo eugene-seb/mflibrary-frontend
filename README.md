@@ -6,7 +6,7 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 To know more about this project, please consider the following sections:
 
-* [Project description](https://github.com/eugene-seb/MF-Library)
+- [Project description](https://github.com/eugene-seb/MF-Library)
 
 ## Development server
 

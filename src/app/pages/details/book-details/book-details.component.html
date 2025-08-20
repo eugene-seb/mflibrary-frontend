@@ -1,0 +1,9 @@
+@if (book) {
+<h2>{{ book.title }}</h2>
+<img [src]="book.coverImageUrl" alt="Cover" />
+<p><strong>Author:</strong> {{ book.author }}</p>
+<p>{{ book.description }}</p>
+<p><strong>ISBN:</strong> {{ book.isbn }}</p>
+} @else {
+<p>No book found</p>
+}
