@@ -10,3 +10,11 @@
         <!-- ... -->
     </nav>
 </div>
+
+<nav class="flex justify-between p-4 bg-gray-800 text-white">
+    <span>📚 MF Library</span>
+    <div>
+        @if (!isLoggedIn){<button (click)="login()">Login</button>}
+        @else{<button (click)="logout()">Logout</button>}
+    </div>
+</nav>
