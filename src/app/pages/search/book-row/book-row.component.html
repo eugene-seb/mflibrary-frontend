@@ -1,6 +1,6 @@
 @if (book) {
 <div class="cursor-pointer flex items-center justify-between bg-white p-4 rounded-lg shadow-sm hover:shadow transition"
-    [routerLink]="['books/', book.isbn]">
+    [routerLink]="['/books', 'details', book.isbn]">
     <div class="flex items-center gap-4">
         <img [src]="book.coverImageUrl" alt="Cover" class="w-16 h-20 rounded-md object-cover" />
         <div>
@@ -18,5 +18,5 @@
     </div>
 </div>
 } @else {
-<p>No book found</p>
+<app-page-not-found />
 }
