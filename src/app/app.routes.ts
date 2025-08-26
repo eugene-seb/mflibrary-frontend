@@ -4,7 +4,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { BookListComponent } from './pages/search/book-list/book-list.component';
 import { BookDetailsComponent } from './pages/details/book-details/book-details.component';
 import { roleGuard } from './core/guards/role.guard';
-import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },

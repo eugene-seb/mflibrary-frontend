@@ -3,7 +3,7 @@ import { BookTagComponent } from '../book-tag/book-tag.component';
 import { RouterModule } from '@angular/router';
 import { Book } from '../../../core/models/book';
 import { IconAvatarComponent } from '../../../shared/icon-avatar/icon-avatar.component';
-import { PageNotFoundComponent } from "../../../components/page-not-found/page-not-found.component";
+import { PageNotFoundComponent } from "../../../shared/page-not-found/page-not-found.component";
 
 @Component({
   selector: 'app-book-row',
