@@ -7,6 +7,12 @@
         <a class="flex items-center gap-2 text-gray-700 hover:text-black" routerLink="/browse">
             <span class="material-icons">search</span> Browse
         </a>
-        <!-- ... -->
+    </nav>
+    <nav class="flex justify-between p-4 bg-gray-800 text-white">
+        <span>📚 MF Library</span>
+        <div>
+            @if (!isLoggedIn){<button (click)="login()">Login</button>}
+            @else{<button (click)="logout()">Logout</button>}
+        </div>
     </nav>
 </div>

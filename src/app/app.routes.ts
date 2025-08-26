@@ -1,9 +1,26 @@
 import { Routes } from '@angular/router';
+
+import { authGuard } from './core/guards/auth.guard';
 import { BookListComponent } from './pages/search/book-list/book-list.component';
 import { BookDetailsComponent } from './pages/details/book-details/book-details.component';
+import { roleGuard } from './core/guards/role.guard';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+
 export const routes: Routes = [
-  { path: '', component: BookListComponent },
-  { path: 'home', component: BookListComponent },
-  { path: 'books/:isbn', component: BookDetailsComponent },
-  { path: '**', redirectTo: '' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+
+  { path: 'home', component: BookListComponent, canActivate: [authGuard] },
+
+  {
+    path: 'books',
+    canActivateChild: [authGuard, roleGuard],
+    data: { roles: ['USER', 'ADMIN'] },
+    children: [
+      { path: 'details/:isbn', component: BookDetailsComponent },
+      { path: '', component: BookListComponent },
+    ],
+  },
+
+  { path: 'page-not-found', component: PageNotFoundComponent },
+  { path: '**', redirectTo: 'page-not-found' },
 ];
