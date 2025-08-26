@@ -24,7 +24,6 @@ describe('BookListComponent', () => {
 
   beforeEach(async () => {
     mockBookService = jasmine.createSpyObj('BookService', ['getBooks']);
-    mockBookService.getBooks.and.returnValue(of(mockBooks));
 
     await TestBed.configureTestingModule({
       imports: [BookListComponent],
@@ -35,7 +34,7 @@ describe('BookListComponent', () => {
           useValue: {
             snapshot: {
               paramMap: {
-                get: () => '978-0132350884', // key: isbn
+                get: () => '978-0132350884',
               },
             },
           },
@@ -52,7 +51,9 @@ describe('BookListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should fetch book list on init', () => {
+  it('should fetch book list on init', async () => {
+    mockBookService.getBooks.and.returnValue(of(mockBooks));
+    await component.ngOnInit();
     expect(component.books).toEqual(mockBooks);
   });
 });

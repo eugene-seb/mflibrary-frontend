@@ -15,7 +15,7 @@ export class BookDetailsComponent implements OnInit {
 
   book: Book | undefined;
 
-  ngOnInit(): void {
+  async ngOnInit() {
     const isbn = this.route.snapshot.paramMap.get('isbn');
     if (isbn) {
       this.bookService
