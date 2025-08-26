@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
 import { Book } from '../models/book';
 import { Observable, of } from 'rxjs';
 import { BOOKS } from '../models/book-list';
@@ -11,7 +10,7 @@ import { Observable, of } from 'rxjs';
   providedIn: 'root',
 })
 export class BookService {
-  private bookUrlAPI: string = environment.bookUrlAPI;
+  //private bookUrlAPI: string = environment.bookUrlAPI;
   private books: Book[] = BOOKS;
   /*
   constructor(private http: HttpClient) { }
