@@ -10,10 +10,15 @@ import { BookService } from '../../../core/services/book.service';
   styleUrl: './book-details.component.css',
 })
 export class BookDetailsComponent implements OnInit {
-  private bookService = inject(BookService);
-  private route = inject(ActivatedRoute);
+  private bookService: BookService;
+  private route: ActivatedRoute;
 
   book: Book | undefined;
+
+  constructor() {
+    this.bookService = inject(BookService);
+    this.route = inject(ActivatedRoute);
+  }
 
   async ngOnInit() {
     const isbn = this.route.snapshot.paramMap.get('isbn');

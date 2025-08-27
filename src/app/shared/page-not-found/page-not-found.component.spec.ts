@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { BehaviorSubject } from 'rxjs';
 
 import { PageNotFoundComponent } from './page-not-found.component';
 import { AuthService } from '../../core/services/auth.service';
@@ -9,8 +10,10 @@ describe('PageNotFoundComponent', () => {
   let authServiceSpy: jasmine.SpyObj<AuthService>;
 
   beforeEach(async () => {
-    authServiceSpy = jasmine.createSpyObj('AuthService', ['isLoggedIn']);
-    
+    authServiceSpy = jasmine.createSpyObj('AuthService', [], {
+      isAuthenticated$: new BehaviorSubject<boolean>(false),
+    });
+
     await TestBed.configureTestingModule({
       imports: [PageNotFoundComponent],
       providers: [{ provide: AuthService, useValue: authServiceSpy }],
@@ -25,15 +28,20 @@ describe('PageNotFoundComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it("Should have it's property isLoggedIn at true when AuthService.isLoggedIn return true", async () => {
-    authServiceSpy.isLoggedIn.and.returnValue(Promise.resolve(true));
-    await component.ngOnInit();
-    expect(component.isLoggedIn).toBeTrue();
-  });
+  it('should update isAuthenticated when auth state changes', () => {
+    // Arrange
+    const authSubject =
+      authServiceSpy.isAuthenticated$ as BehaviorSubject<boolean>;
+    component.ngOnInit();
 
-  it("Should have it's property isLoggedIn at false when AuthService.isLoggedIn return false", async () => {
-    authServiceSpy.isLoggedIn.and.returnValue(Promise.resolve(false));
-    await component.ngOnInit();
-    expect(component.isLoggedIn).toBeFalse();
+    // Act & Assert - Test multiple state changes
+    authSubject.next(true);
+    expect(component.isAuthenticated).toBeTrue();
+
+    authSubject.next(false);
+    expect(component.isAuthenticated).toBeFalse();
+
+    authSubject.next(true);
+    expect(component.isAuthenticated).toBeTrue();
   });
 });

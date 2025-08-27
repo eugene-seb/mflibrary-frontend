@@ -155,7 +155,7 @@ export const BOOKS: Book[] = [
     categories: ['Android'],
   },
   {
-    isbn: '978-1492078005',
+    isbn: '978-149207800s5',
     title: 'Terraform: Up and Running',
     description: 'Infrastructure as Code.',
     author: 'Yevgeniy Brikman',
@@ -173,7 +173,7 @@ export const BOOKS: Book[] = [
     categories: ['Operating Systems'],
   },
   {
-    isbn: '978-0131103627',
+    isbn: '978-01311036s27',
     title: 'Structure and Interpretation of Computer Programs',
     description: 'A foundational text in computer science.',
     author: 'Harold Abelson & Gerald Jay Sussman',

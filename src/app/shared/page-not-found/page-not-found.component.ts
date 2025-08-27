@@ -1,5 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-page-not-found',
@@ -8,10 +9,19 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrl: './page-not-found.component.css',
 })
 export class PageNotFoundComponent implements OnInit {
-  private authService = inject(AuthService);
-  isLoggedIn = false;
+  private authService: AuthService;
+  private destroyRef: DestroyRef;
+  isAuthenticated: boolean;
+
+  constructor() {
+    this.authService = inject(AuthService);
+    this.destroyRef = inject(DestroyRef);
+    this.isAuthenticated = false;
+  }
 
   async ngOnInit() {
-    this.isLoggedIn = await this.authService.isLoggedIn();
+    this.authService.isAuthenticated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((isAuth) => (this.isAuthenticated = isAuth));
   }
 }

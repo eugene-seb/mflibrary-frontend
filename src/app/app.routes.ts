@@ -5,6 +5,7 @@ import { BookListComponent } from './pages/search/book-list/book-list.component'
 import { BookDetailsComponent } from './pages/details/book-details/book-details.component';
 import { roleGuard } from './core/guards/role.guard';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
+import { Roles } from './core/models/roles.enum';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -14,7 +15,7 @@ export const routes: Routes = [
   {
     path: 'books',
     canActivateChild: [authGuard, roleGuard],
-    data: { roles: ['USER', 'ADMIN'] },
+    data: { roles: [Roles.USER, Roles.MODERATOR, Roles.ADMIN] },
     children: [
       { path: 'details/:isbn', component: BookDetailsComponent },
       { path: '', component: BookListComponent },
