@@ -1,5 +1,10 @@
 <div class="w-64 bg-white border-r h-full p-4">
     <h1 class="text-xl font-bold mb-6">MF Library</h1>
+    @if (isAuthenticated){
+    <div>
+        <span>Welcome, {{ username }}</span>
+    </div>
+    }
     <nav class="space-y-4">
         <a class="flex items-center gap-2 text-gray-700 hover:text-black" routerLink="/">
             <span class="material-icons">home</span> Home
@@ -11,7 +16,7 @@
     <nav class="flex justify-between p-4 bg-gray-800 text-white">
         <span>📚 MF Library</span>
         <div>
-            @if (!isLoggedIn){<button (click)="login()">Login</button>}
+            @if (!isAuthenticated){<button (click)="login()">Login</button>}
             @else{<button (click)="logout()">Logout</button>}
         </div>
     </nav>

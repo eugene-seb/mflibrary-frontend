@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
@@ -8,11 +9,28 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrl: './sidebar.component.css',
 })
 export class SidebarComponent implements OnInit {
-  isLoggedIn = false;
-  private authService: AuthService = inject(AuthService);
+  private authService: AuthService;
+  private destroyRef: DestroyRef;
+  isAuthenticated: boolean;
+  username: string;
+
+  constructor() {
+    this.authService = inject(AuthService);
+    this.destroyRef = inject(DestroyRef);
+    this.isAuthenticated = false;
+    this.username = '';
+  }
 
   async ngOnInit() {
-    this.isLoggedIn = await this.authService.isLoggedIn();
+    this.authService.isAuthenticated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((isAuth) => (this.isAuthenticated = isAuth));
+
+    this.authService.profile$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((profile) => {
+        this.username = profile?.username ?? '';
+      });
   }
 
   login() {

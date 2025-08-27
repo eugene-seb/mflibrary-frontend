@@ -10,9 +10,13 @@ import { Book } from '../../../core/models/book';
   styleUrl: './book-list.component.css',
 })
 export class BookListComponent implements OnInit {
-  private bookService = inject(BookService);
+  private bookService;
+  books: Book[];
 
-  books: Book[] = [];
+  constructor() {
+    this.bookService = inject(BookService);
+    this.books = [];
+  }
 
   async ngOnInit() {
     this.bookService.getBooks().subscribe((data) => (this.books = data));
