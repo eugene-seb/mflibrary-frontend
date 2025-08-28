@@ -7,6 +7,7 @@ import { UserProfile } from '../models/user-profile';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private keycloak = inject(KeycloakService);
+  private refreshInterval!: ReturnType<typeof setInterval>;
 
   private _isAuthenticated$ = new BehaviorSubject<boolean>(false);
   private _profile$ = new BehaviorSubject<UserProfile | null>(null);
@@ -25,7 +26,26 @@ export class AuthService {
       this._profile$.next(profile);
       const roles = this.keycloak.getUserRoles(true);
       this._roles$.next(roles);
+
+      this.refreshToken();
     }
+  }
+
+  /**
+   * Auto-refresh the token every 10 secondes.
+   */
+  refreshToken() {
+    this.refreshInterval = setInterval(async () => {
+        try {
+          const refreshed = await this.keycloak.updateToken(30); // refresh if expiring in 30s
+          if (refreshed) {
+            console.log('Token refreshed');
+          }
+        } catch (err) {
+          console.error('Failed to refresh token', err);
+          this.logout();
+        }
+      }, 10000);
   }
 
   /** Force login */
@@ -34,8 +54,12 @@ export class AuthService {
   }
 
   /** Force logout */
-  logout(redirectUri: string = window.location.origin): void {
+  logout(redirectUri: string = window.location.origin): void {    
+    clearInterval(this.refreshInterval);
     this.keycloak.logout(redirectUri);
+    this._isAuthenticated$.next(false);
+    this._profile$.next(null);
+    this._roles$.next([]);
   }
 
   /** Get the raw access token */

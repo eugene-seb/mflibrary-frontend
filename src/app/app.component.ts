@@ -12,8 +12,7 @@ import { AuthService } from './core/services/auth.service';
 })
 export class AppComponent implements OnInit {
   private authService: AuthService = inject(AuthService);
-  
-  title = 'mflibrary-frontend';
+  currentYear = new Date().getFullYear();
 
   async ngOnInit() {
     await this.authService.init();

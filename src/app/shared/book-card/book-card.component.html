@@ -1,0 +1,64 @@
+@if (book) {
+<div class="cursor-pointer bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md hover:border-blue-200 transition-all duration-200 group"
+    [routerLink]="['/books', 'details', book.isbn]">
+
+    <!-- Book Cover Image -->
+    <div class="relative overflow-hidden">
+        <img [src]="book.coverImageUrl" [alt]="book.title"
+            class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-200"
+            onerror="this.src='/assets/img/default-book-cover.jpg'" />
+        <!-- Favorite/Quick Action Button -->
+        <button type="button"
+            class="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-red-50 hover:text-red-500 transition-colors"
+            (click)="$event.stopPropagation(); toggleFavorite($event)">
+            @if (isFavorite) {
+            <span class="material-icons text-lg text-red-500">liked</span>
+            } @else {
+            <span class="material-icons text-lg">favorite</span>
+            }
+        </button>
+    </div>
+
+    <!-- Book Content -->
+    <div class="p-4">
+        <!-- Title -->
+        <h3 class="font-semibold text-gray-900 line-clamp-2 mb-2 group-hover:text-blue-600 transition-colors">
+            {{ book.title }}
+        </h3>
+
+        <!-- Author -->
+        <div class="flex items-center gap-2 mb-3">
+            <app-icon-avatar [avatarLabel]="book.author" size="sm"></app-icon-avatar>
+            <span class="text-sm text-gray-600 truncate">{{ book.author }}</span>
+        </div>
+
+        <!-- Categories -->
+        <div class="flex flex-wrap gap-1 mb-3">
+            @for (category of book.categories.slice(0, 2); track $index) {
+            <app-book-tag [category]="category"></app-book-tag>
+            }
+            @if (book.categories.length > 2) {
+            <span class="text-xs text-gray-500">+{{ book.categories.length - 2 }} more</span>
+            }
+        </div>
+
+        <!-- Metadata -->
+        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+            <span class="text-sm text-gray-500">
+                {{ book.publishedDate | date:'MMM d, y' }}
+            </span>
+
+            <!-- Rating -->
+            <div class="flex items-center gap-1 text-sm text-yellow-600">
+                <span class="material-icons text-sm">star</span>
+                <span>4.5</span> <!-- I have to replace I when I will connect the backend -->
+            </div>
+        </div>
+    </div>
+</div>
+} @else {
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center text-gray-500">
+    <span class="material-icons text-3xl mb-2">auto_stories</span>
+    <p>Book information not available</p>
+</div>
+}

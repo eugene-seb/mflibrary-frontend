@@ -11,16 +11,19 @@ describe('BookListComponent', () => {
   let fixture: ComponentFixture<BookListComponent>;
   let mockBookService: jasmine.SpyObj<BookService>;
 
-  const mockBooks: Book[] = [
-    {
-      isbn: '978-0132350884',
-      title: 'Clean Code',
-      author: 'Robert C. Martin',
-      description: 'A Handbook of Agile Software Craftsmanship',
-      coverImageUrl: 'https://example.com/clean-code.jpg',
-      categories: ['Programming'],
-    },
-  ];
+  const book: Book = {
+    isbn: '978-0132350884',
+    title: 'Clean Code',
+    author: 'Robert C. Martin',
+    description: 'A Handbook of Agile Software Craftsmanship',
+    coverImageUrl: 'https://example.com/clean-code.jpg',
+    categories: ['Programming'],
+    publishedDate: '2025-08-28',
+  };
+  const mockBooks: { books: Book[]; totalItems: number } = {
+    books: [book],
+    totalItems: 1,
+  };
 
   beforeEach(async () => {
     mockBookService = jasmine.createSpyObj('BookService', ['getBooks']);
@@ -54,6 +57,6 @@ describe('BookListComponent', () => {
   it('should fetch book list on init', async () => {
     mockBookService.getBooks.and.returnValue(of(mockBooks));
     await component.ngOnInit();
-    expect(component.books).toEqual(mockBooks);
+    expect(component.books).toEqual(mockBooks.books);
   });
 });

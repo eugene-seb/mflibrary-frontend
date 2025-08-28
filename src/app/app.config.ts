@@ -33,9 +33,11 @@ function initializeKeycloak(keycloak: KeycloakService) {
         clientId: environment.keycloak.clientId,
       },
       initOptions: {
-        onLoad: 'login-required',
+        onLoad: 'check-sso',
+        silentCheckSsoRedirectUri:
+          window.location.origin + '/assets/silent-check-sso.html',
         pkceMethod: 'S256',
-        checkLoginIframe: false,
+        checkLoginIframe: true,
         redirectUri: window.location.origin,
       },
       enableBearerInterceptor: true,
