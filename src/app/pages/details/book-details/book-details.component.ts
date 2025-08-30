@@ -6,6 +6,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BookTagComponent } from '../../../shared/book-tag/book-tag.component';
 import { CommonModule } from '@angular/common';
 import { IconAvatarComponent } from '../../../shared/icon-avatar/icon-avatar.component';
+import { catchError, of, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-book-details',
@@ -24,35 +25,76 @@ export class BookDetailsComponent implements OnInit {
   isFavorite = false;
 
   async ngOnInit() {
-    this.loadBookDetails();
+    this.subscribeToRouteParams();
   }
 
-  loadBookDetails(): void {
-    const isbn = this.route.snapshot.paramMap.get('isbn');
-    if (!isbn) {
-      this.error = 'No book ISBN provided';
-      this.loading = false;
-      return;
-    }
+  private loadBookDetails(): void {
+    this.route.paramMap.subscribe(params => {
+      const isbn = params.get('isbn');
+      if (!isbn) {
+        this.error = 'No book ISBN provided';
+        this.loading = false;
+        return;
+      }
 
-    this.loading = true;
-    this.error = null;
+      this.loading = true;
+      this.error = null;
 
-    this.bookService
-      .getBookDetails(isbn)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      this.bookService.getBookDetails(isbn)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (data) => {
+            this.book = data;
+            this.loading = false;
+          },
+          error: (err) => {
+            this.error = 'Failed to load book details. Please try again.';
+            this.loading = false;
+            console.error('Error loading book details:', err);
+          }
+        });
+    });
+  }
+
+  private subscribeToRouteParams(): void {
+    this.route.paramMap
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap(() => {
+          // Reset state when route changes
+          this.loading = true;
+          this.error = null;
+          this.book = undefined;
+        }),
+        switchMap(params => {
+          const isbn = params.get('isbn');
+          if (!isbn) {
+            this.error = 'No book ISBN provided';
+            this.loading = false;
+            return of(null);
+          }
+          return this.bookService.getBookDetails(isbn).pipe(
+            catchError(err => {
+              this.error = 'Failed to load book details. Please try again.';
+              this.loading = false;
+              console.error('Error loading book details:', err);
+              return of(null);
+            })
+          );
+        })
+      )
       .subscribe({
         next: (data) => {
-          this.book = data;
+          if (data) {
+            this.book = data;
+          }
           this.loading = false;
-          // Initialize favorite state later
-          // this.isFavorite = this.favoriteService.isFavorite(isbn);
         },
         error: (err) => {
-          this.error = 'Failed to load book details. Please try again.';
+          this.error = 'An unexpected error occurred.';
           this.loading = false;
-          console.error('Error loading book details:', err);
-        },
+          console.error('Unexpected error:', err);
+        }
       });
   }
 

@@ -3,6 +3,7 @@ import { KeycloakService } from 'keycloak-angular';
 import { BehaviorSubject } from 'rxjs';
 
 import { UserProfile } from '../models/user-profile';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -24,7 +25,7 @@ export class AuthService {
     if (loggedIn) {
       const profile = await this.keycloak.loadUserProfile();
       this._profile$.next(profile);
-      const roles = this.keycloak.getUserRoles(true);
+      const roles = await this.keycloak.getUserRoles(true);
       this._roles$.next(roles);
 
       this.refreshToken();
@@ -32,20 +33,25 @@ export class AuthService {
   }
 
   /**
-   * Auto-refresh the token every 10 secondes.
+   * Auto-refresh the token every 10 seconds.
    */
   refreshToken() {
-    this.refreshInterval = setInterval(async () => {
-        try {
-          const refreshed = await this.keycloak.updateToken(30); // refresh if expiring in 30s
-          if (refreshed) {
-            console.log('Token refreshed');
-          }
-        } catch (err) {
-          console.error('Failed to refresh token', err);
-          this.logout();
+    const refresh = async () => {
+      try {
+        const refreshed = await this.keycloak.updateToken(30); // refresh if expiring in 30s
+        if (refreshed && !environment.production) {
+          console.log('Token refreshed');
         }
-      }, 10000);
+      } catch (err) {
+        if (!environment.production) {
+          console.error('Failed to refresh token', err);
+        }
+        this.logout();
+        return;
+      }
+      this.refreshInterval = setInterval(refresh, 10000);
+    };
+    refresh();
   }
 
   /** Force login */
@@ -54,7 +60,7 @@ export class AuthService {
   }
 
   /** Force logout */
-  logout(redirectUri: string = window.location.origin): void {    
+  logout(redirectUri: string = window.location.origin): void {
     clearInterval(this.refreshInterval);
     this.keycloak.logout(redirectUri);
     this._isAuthenticated$.next(false);

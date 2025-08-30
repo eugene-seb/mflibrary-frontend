@@ -1,7 +1,8 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { BookService } from '../../../core/services/book.service';
 import { Book } from '../../../core/models/book';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BookCardComponent } from '../../../shared/book-card/book-card.component';
 
 @Component({
@@ -13,12 +14,11 @@ import { BookCardComponent } from '../../../shared/book-card/book-card.component
 export class BookListComponent implements OnInit {
   private bookService = inject(BookService);
   private destroyRef = inject(DestroyRef);
-  
+
   books: Book[] = [];
   loading = true;
   error: string | null = null;
-  
-  // Pagination properties
+
   currentPage = 1;
   pageSize = 12;
   totalPages = 1;
@@ -31,8 +31,9 @@ export class BookListComponent implements OnInit {
   loadBooks(): void {
     this.loading = true;
     this.error = null;
-    
-    this.bookService.getBooks(this.currentPage, this.pageSize)
+
+    this.bookService
+      .getBooks(this.currentPage, this.pageSize)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
@@ -45,7 +46,7 @@ export class BookListComponent implements OnInit {
           this.error = 'Failed to load books. Please try again.';
           this.loading = false;
           console.error('Error loading books:', err);
-        }
+        },
       });
   }
 

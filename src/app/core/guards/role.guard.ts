@@ -4,9 +4,7 @@ import { CanActivateFn, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-export const roleGuard: CanActivateFn = async (
-  route: ActivatedRouteSnapshot
-) => {
+export const roleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const router = inject(Router);
   const authService = inject(AuthService);
   const destroyRef = inject(DestroyRef);
@@ -20,11 +18,10 @@ export const roleGuard: CanActivateFn = async (
     r.toLowerCase()
   );
   const hasRole = requiredRoles.some((role) => userRoles.includes(role));
-
+  
   if (hasRole) {
     return true;
   } else {
-    // Redirect to a "404 not found" page
     return router.parseUrl('/page-not-found');
   }
 };

@@ -8,6 +8,7 @@
             class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-200"
             onerror="this.src='/assets/img/default-book-cover.jpg'" />
         <!-- Favorite/Quick Action Button -->
+        @if (isAuthenticated) {
         <button type="button"
             class="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-red-50 hover:text-red-500 transition-colors"
             (click)="$event.stopPropagation(); toggleFavorite($event)">
@@ -17,6 +18,7 @@
             <span class="material-icons text-lg">favorite</span>
             }
         </button>
+        }
     </div>
 
     <!-- Book Content -->
