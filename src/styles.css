@@ -1,2 +1,32 @@
-/* You can add global styles to this file, and also import other style files */
 @import "primeicons/primeicons.css";
+@import "primeflex/primeflex.css";
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+}
+
+.surface-ground {
+  background-color: var(--surface-ground);
+}
+
+.surface-0 {
+  background-color: var(--surface-0);
+}
+
+.surface-border {
+  border-color: var(--surface-border);
+}
+
+.text-color-secondary {
+  color: var(--text-color-secondary);
+}
+
+.shadow-2 {
+  box-shadow: var(--shadow-2);
+}
+
+.border-top-1 {
+  border-top-width: 1px;
+  border-top-style: solid;
+}

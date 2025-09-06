@@ -1,16 +1,23 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { catchError, of, switchMap, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ButtonModule } from 'primeng/button';
 import { Book } from '../../../core/models/book';
 import { BookService } from '../../../core/services/book.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BookTagComponent } from '../../../shared/book-tag/book-tag.component';
-import { CommonModule } from '@angular/common';
 import { IconAvatarComponent } from '../../../shared/icon-avatar/icon-avatar.component';
-import { catchError, of, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-book-details',
-  imports: [CommonModule, BookTagComponent, IconAvatarComponent, RouterModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    BookTagComponent,
+    IconAvatarComponent,
+    ButtonModule,
+  ],
   templateUrl: './book-details.component.html',
   styleUrl: './book-details.component.css',
 })
@@ -29,7 +36,7 @@ export class BookDetailsComponent implements OnInit {
   }
 
   private loadBookDetails(): void {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const isbn = params.get('isbn');
       if (!isbn) {
         this.error = 'No book ISBN provided';
@@ -40,7 +47,8 @@ export class BookDetailsComponent implements OnInit {
       this.loading = true;
       this.error = null;
 
-      this.bookService.getBookDetails(isbn)
+      this.bookService
+        .getBookDetails(isbn)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (data) => {
@@ -51,7 +59,7 @@ export class BookDetailsComponent implements OnInit {
             this.error = 'Failed to load book details. Please try again.';
             this.loading = false;
             console.error('Error loading book details:', err);
-          }
+          },
         });
     });
   }
@@ -66,7 +74,7 @@ export class BookDetailsComponent implements OnInit {
           this.error = null;
           this.book = undefined;
         }),
-        switchMap(params => {
+        switchMap((params) => {
           const isbn = params.get('isbn');
           if (!isbn) {
             this.error = 'No book ISBN provided';
@@ -74,7 +82,7 @@ export class BookDetailsComponent implements OnInit {
             return of(null);
           }
           return this.bookService.getBookDetails(isbn).pipe(
-            catchError(err => {
+            catchError((err) => {
               this.error = 'Failed to load book details. Please try again.';
               this.loading = false;
               console.error('Error loading book details:', err);
@@ -94,7 +102,7 @@ export class BookDetailsComponent implements OnInit {
           this.error = 'An unexpected error occurred.';
           this.loading = false;
           console.error('Unexpected error:', err);
-        }
+        },
       });
   }
 

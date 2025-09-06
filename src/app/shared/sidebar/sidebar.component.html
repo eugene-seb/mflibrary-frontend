@@ -1,69 +1,81 @@
-<div class="w-64 bg-white border-r border-gray-200 h-full flex flex-col">
+<div class="w-64 bg-white surface-0 border-right-1 surface-border h-full flex flex-column">
     <!-- Header -->
-    <div class="p-6 border-b border-gray-200">
-        <h1 class="text-xl font-bold text-gray-900">
-            <a routerLink="/home" class="hover:text-blue-600 transition-colors">📚 MF Library</a>
+    <div class="p-6 border-bottom-1 surface-border">
+        <h1 class="text-xl font-bold text-900 m-0">
+            <a routerLink="/home" class="no-underline text-900 hover:text-primary transition-colors transition-duration-200">
+                <i class="pi pi-book text-xl mr-2"></i>
+                MF Library
+            </a>
         </h1>
     </div>
 
     <!-- User Welcome Section -->
     @if (isAuthenticated) {
-    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
-        <p class="text-sm text-gray-600">Welcome back,</p>
-        <p class="font-medium text-gray-900 truncate">{{ username }}</p>
+    <div class="px-6 py-4 bg-gray-50 surface-100 border-bottom-1 surface-border">
+        <p class="text-sm text-600 mb-1">Welcome back,</p>
+        <p class="font-medium text-900 truncate m-0">{{ username }}</p>
     </div>
     }
 
     <!-- Navigation Menu -->
-    <nav class="flex-1 p-4 space-y-2">
-        <a routerLink="/home" routerLinkActive="bg-blue-50 text-blue-600 border-blue-200"
-            class="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200 border border-transparent">
-            <span class="material-icons text-xl">home</span>
+    <nav class="flex-1 p-4 flex flex-column gap-2">
+        <a routerLink="/home" routerLinkActive="bg-blue-50 surface-100 text-primary border-primary"
+            class="flex align-items-center gap-3 p-3 border-round-lg text-700 hover:surface-100 hover:text-900 transition-all transition-duration-200 border-1 border-transparent no-underline">
+            <i class="pi pi-home text-xl"></i>
             <span class="font-medium">Home</span>
         </a>
 
-        <a routerLink="/browse" routerLinkActive="bg-blue-50 text-blue-600 border-blue-200"
-            class="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200 border border-transparent">
-            <span class="material-icons text-xl">search</span>
+        <a routerLink="/browse" routerLinkActive="bg-blue-50 surface-100 text-primary border-primary"
+            class="flex align-items-center gap-3 p-3 border-round-lg text-700 hover:surface-100 hover:text-900 transition-all transition-duration-200 border-1 border-transparent no-underline">
+            <i class="pi pi-search text-xl"></i>
             <span class="font-medium">Browse Books</span>
         </a>
 
-        <a routerLink="/my-books" routerLinkActive="bg-blue-50 text-blue-600 border-blue-200"
-            class="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200 border border-transparent">
-            <span class="material-icons text-xl">bookmark</span>
+        <a routerLink="/my-books" routerLinkActive="bg-blue-50 surface-100 text-primary border-primary"
+            class="flex align-items-center gap-3 p-3 border-round-lg text-700 hover:surface-100 hover:text-900 transition-all transition-duration-200 border-1 border-transparent no-underline">
+            <i class="pi pi-bookmark text-xl"></i>
             <span class="font-medium">My Books</span>
         </a>
 
         @if (isAuthenticated) {
-        <a routerLink="/profile" routerLinkActive="bg-blue-50 text-blue-600 border-blue-200"
-            class="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200 border border-transparent">
-            <span class="material-icons text-xl">person</span>
+        <a routerLink="/profile" routerLinkActive="bg-blue-50 surface-100 text-primary border-primary"
+            class="flex align-items-center gap-3 p-3 border-round-lg text-700 hover:surface-100 hover:text-900 transition-all transition-duration-200 border-1 border-transparent no-underline">
+            <i class="pi pi-user text-xl"></i>
             <span class="font-medium">Profile</span>
         </a>
         }
     </nav>
 
     <!-- Auth Section -->
-    <div class="p-4 border-t border-gray-200 bg-gray-50">
+    <div class="p-4 border-top-1 surface-border surface-100">
         @if (!isAuthenticated) {
-        <div class="space-y-2">
-            <button type="button" (click)="login()"
-                class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 font-medium">
-                <span class="material-icons text-xl">login</span>
-                Sign In
-            </button>
-            <button type="button" routerLink="/signup"
-                class="w-full flex items-center justify-center gap-2 border border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900 py-2 px-4 rounded-lg transition-all duration-200">
-                <span class="material-icons text-xl">person_add</span>
-                Sign Up
-            </button>
+        <div class="flex flex-column gap-2">
+            <p-button 
+                (onClick)="login()" 
+                label="Sign In" 
+                icon="pi pi-sign-in" 
+                styleClass="w-full"
+                severity="primary">
+            </p-button>
+            
+            <p-button 
+                routerLink="/signup"
+                label="Sign Up" 
+                icon="pi pi-user-plus" 
+                styleClass="w-full"
+                severity="secondary"
+                outlined="true">
+            </p-button>
         </div>
         } @else {
-        <button type="button" (click)="logout()"
-            class="w-full flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 py-2 px-4 rounded-lg transition-all duration-200 border border-red-200 font-medium">
-            <span class="material-icons text-xl">logout</span>
-            Sign Out
-        </button>
+        <p-button 
+            (onClick)="logout()" 
+            label="Sign Out" 
+            icon="pi pi-sign-out" 
+            styleClass="w-full"
+            severity="danger"
+            outlined="true">
+        </p-button>
         }
     </div>
 </div>

@@ -1,5 +1,7 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
 
 import { BookService } from '../../../core/services/book.service';
 import { Book } from '../../../core/models/book';
@@ -7,9 +9,10 @@ import { BookCardComponent } from '../../../shared/book-card/book-card.component
 
 @Component({
   selector: 'app-book-list',
-  imports: [BookCardComponent],
+  standalone: true,
+  imports: [CommonModule, BookCardComponent, ButtonModule],
   templateUrl: './book-list.component.html',
-  styleUrl: './book-list.component.css',
+  styleUrls: ['./book-list.component.css'],
 })
 export class BookListComponent implements OnInit {
   private bookService = inject(BookService);
