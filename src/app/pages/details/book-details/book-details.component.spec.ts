@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { BookDetailsComponent } from './book-details.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -22,19 +23,16 @@ describe('BookDetailsComponent', () => {
 
   beforeEach(async () => {
     mockBookService = jasmine.createSpyObj('BookService', ['getBookDetails']);
+    mockBookService.getBookDetails.and.returnValue(of(mockBook));
 
     await TestBed.configureTestingModule({
-      imports: [BookDetailsComponent],
+      imports: [BookDetailsComponent, RouterTestingModule],
       providers: [
         { provide: BookService, useValue: mockBookService },
         {
           provide: ActivatedRoute,
           useValue: {
-            snapshot: {
-              paramMap: {
-                get: () => '978-0132350884',
-              },
-            },
+            paramMap: of({ get: () => '978-0132350884' }),
           },
         },
       ],

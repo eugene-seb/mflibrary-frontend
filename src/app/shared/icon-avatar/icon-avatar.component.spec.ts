@@ -13,6 +13,7 @@ describe('IconAvatarComponent', () => {
 
     fixture = TestBed.createComponent(IconAvatarComponent);
     component = fixture.componentInstance;
+    component.avatarLabel = 'T';
     fixture.detectChanges();
   });
 

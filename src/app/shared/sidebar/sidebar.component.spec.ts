@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { SidebarComponent } from './sidebar.component';
 import { AuthService } from '../../core/services/auth.service';
@@ -17,7 +18,7 @@ describe('SidebarComponent', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [SidebarComponent],
+      imports: [SidebarComponent, RouterTestingModule],
       providers: [{ provide: AuthService, useValue: authServiceSpy }],
     }).compileComponents();
 
