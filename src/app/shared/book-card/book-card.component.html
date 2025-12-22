@@ -1,0 +1,68 @@
+@if (book) {
+<div class="cursor-pointer bg-white surface-0 border-round-lg shadow-2 border-1 surface-border overflow-hidden hover:shadow-4 hover:border-primary transition-all transition-duration-200"
+    [routerLink]="['/books', 'details', book.isbn]">
+
+    <!-- Book Cover Image -->
+    <div class="relative overflow-hidden">
+        <img [src]="book.coverImageUrl" [alt]="book.title"
+            class="w-full h-12rem object-cover hover:scale-105 transition-transform transition-duration-200"
+            onerror="this.src='/assets/img/default-book-cover.jpg'" />
+
+        <!-- Favorite/Quick Action Button -->
+        @if (isAuthenticated) {
+        <button type="button"
+            class="absolute top-2 right-2 p-2 bg-white surface-0 border-circle shadow-2 hover:bg-red-50 hover:text-red-500 transition-colors transition-duration-200"
+            (click)="$event.stopPropagation(); toggleFavorite($event)">
+            @if (isFavorite) {
+            <i class="pi pi-heart-fill text-lg text-red-500"></i>
+            } @else {
+            <i class="pi pi-heart text-lg"></i>
+            }
+        </button>
+        }
+    </div>
+
+    <!-- Book Content -->
+    <div class="p-4">
+        <!-- Title -->
+        <h3
+            class="font-semibold text-900 line-clamp-2 mb-2 hover:text-primary transition-colors transition-duration-200">
+            {{ book.title }}
+        </h3>
+
+        <!-- Author -->
+        <div class="flex align-items-center gap-2 mb-3">
+            <app-icon-avatar [avatarLabel]="book.author" size="sm"></app-icon-avatar>
+            <span class="text-sm text-600 truncate">{{ book.author }}</span>
+        </div>
+
+        <!-- Categories -->
+        <div class="flex flex-wrap gap-1 mb-3">
+            @for (category of book.categories.slice(0, 2); track $index) {
+            <app-book-tag [category]="category"></app-book-tag>
+            }
+            @if (book.categories.length > 2) {
+            <span class="text-xs text-500">+{{ book.categories.length - 2 }} more</span>
+            }
+        </div>
+
+        <!-- Metadata -->
+        <div class="flex align-items-center justify-content-between pt-3 border-top-1 surface-border">
+            <span class="text-sm text-500">
+                {{ book.publishedDate | date:'MMM d, y' }}
+            </span>
+
+            <!-- Rating -->
+            <div class="flex align-items-center gap-1 text-sm text-yellow-600">
+                <i class="pi pi-star-fill text-sm"></i>
+                <span>4.5</span>
+            </div>
+        </div>
+    </div>
+</div>
+} @else {
+<div class="bg-white surface-0 border-round-lg shadow-2 border-1 surface-border p-6 text-center text-500">
+    <i class="pi pi-book text-3xl mb-2"></i>
+    <p>Book information not available</p>
+</div>
+}

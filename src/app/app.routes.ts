@@ -5,12 +5,12 @@ import { BookListComponent } from './pages/search/book-list/book-list.component'
 import { BookDetailsComponent } from './pages/details/book-details/book-details.component';
 import { roleGuard } from './core/guards/role.guard';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
-import { Roles } from './core/models/roles.enum';
+import { Roles } from './core/enums/roles.enum';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 
-  { path: 'home', component: BookListComponent, canActivate: [authGuard] },
+  { path: 'home', component: BookListComponent },
 
   {
     path: 'books',

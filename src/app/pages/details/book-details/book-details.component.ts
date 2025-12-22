@@ -1,31 +1,138 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { catchError, of, switchMap, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ButtonModule } from 'primeng/button';
 import { Book } from '../../../core/models/book';
 import { BookService } from '../../../core/services/book.service';
+import { BookTagComponent } from '../../../shared/book-tag/book-tag.component';
+import { IconAvatarComponent } from '../../../shared/icon-avatar/icon-avatar.component';
 
 @Component({
   selector: 'app-book-details',
-  imports: [],
+  imports: [
+    CommonModule,
+    RouterModule,
+    BookTagComponent,
+    IconAvatarComponent,
+    ButtonModule,
+  ],
   templateUrl: './book-details.component.html',
   styleUrl: './book-details.component.css',
 })
 export class BookDetailsComponent implements OnInit {
-  private bookService: BookService;
-  private route: ActivatedRoute;
+  private bookService = inject(BookService);
+  private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
 
   book: Book | undefined;
-
-  constructor() {
-    this.bookService = inject(BookService);
-    this.route = inject(ActivatedRoute);
-  }
+  loading = true;
+  error: string | null = null;
+  isFavorite = false;
 
   async ngOnInit() {
-    const isbn = this.route.snapshot.paramMap.get('isbn');
-    if (isbn) {
+    this.subscribeToRouteParams();
+  }
+
+  private loadBookDetails(): void {
+    this.route.paramMap.subscribe((params) => {
+      const isbn = params.get('isbn');
+      if (!isbn) {
+        this.error = 'No book ISBN provided';
+        this.loading = false;
+        return;
+      }
+
+      this.loading = true;
+      this.error = null;
+
       this.bookService
         .getBookDetails(isbn)
-        .subscribe((data) => (this.book = data));
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (data) => {
+            this.book = data;
+            this.loading = false;
+          },
+          error: (err) => {
+            this.error = 'Failed to load book details. Please try again.';
+            this.loading = false;
+            console.error('Error loading book details:', err);
+          },
+        });
+    });
+  }
+
+  private subscribeToRouteParams(): void {
+    this.route.paramMap
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap(() => {
+          // Reset state when route changes
+          this.loading = true;
+          this.error = null;
+          this.book = undefined;
+        }),
+        switchMap((params) => {
+          const isbn = params.get('isbn');
+          if (!isbn) {
+            this.error = 'No book ISBN provided';
+            this.loading = false;
+            return of(null);
+          }
+          return this.bookService.getBookDetails(isbn).pipe(
+            catchError((err) => {
+              this.error = 'Failed to load book details. Please try again.';
+              this.loading = false;
+              console.error('Error loading book details:', err);
+              return of(null);
+            })
+          );
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            this.book = data;
+          }
+          this.loading = false;
+        },
+        error: (err) => {
+          this.error = 'An unexpected error occurred.';
+          this.loading = false;
+          console.error('Unexpected error:', err);
+        },
+      });
+  }
+
+  toggleFavorite(): void {
+    if (!this.book) return;
+
+    this.isFavorite = !this.isFavorite;
+
+    // Integrate with favorite service later
+    // if (this.isFavorite) {
+    //   this.favoriteService.addToFavorites(this.book);
+    // } else {
+    //   this.favoriteService.removeFromFavorites(this.book.isbn);
+    // }
+  }
+
+  shareBook(): void {
+    if (!this.book) return;
+
+    if (navigator.share) {
+      navigator.share({
+        title: this.book.title,
+        text: `Check out "${this.book.title}" by ${this.book.author}`,
+        url: window.location.href,
+      });
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.href);
+      // Show a toast notification here
+      alert('Link copied to clipboard!');
     }
   }
 }

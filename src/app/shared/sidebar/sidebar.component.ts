@@ -1,25 +1,28 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterModule } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [],
+  imports: [
+    RouterModule,
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
+    ButtonModule,
+  ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css',
 })
 export class SidebarComponent implements OnInit {
-  private authService: AuthService;
-  private destroyRef: DestroyRef;
-  isAuthenticated: boolean;
-  username: string;
-
-  constructor() {
-    this.authService = inject(AuthService);
-    this.destroyRef = inject(DestroyRef);
-    this.isAuthenticated = false;
-    this.username = '';
-  }
+  private authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
+  isAuthenticated = false;
+  username = '';
 
   async ngOnInit() {
     this.authService.isAuthenticated$

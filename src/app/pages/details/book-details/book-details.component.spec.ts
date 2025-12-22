@@ -17,6 +17,7 @@ describe('BookDetailsComponent', () => {
     description: 'A Handbook of Agile Software Craftsmanship',
     coverImageUrl: 'https://example.com/clean-code.jpg',
     categories: ['Programming'],
+    publishedDate: '2025-08-28',
   };
 
   beforeEach(async () => {
